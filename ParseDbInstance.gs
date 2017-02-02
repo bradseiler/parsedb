@@ -1,4 +1,5 @@
-var ParseDbInstance_ = function(applicationId, restApiKey, class) {
+var ParseDbInstance_ = function(rootUrl, applicationId, restApiKey, class) {
+  this.rootUrl_ = rootUrl;
   this.applicationId_ = applicationId;
   this.restApiKey_ = restApiKey;
   this.class_ = class;
@@ -144,7 +145,7 @@ ParseDbInstance_.prototype.removeByIdBatch = function(ids, atomic) {
       };
     });
     var response = this.call_({
-      url: 'https://api.parse.com/1/batch',
+      urlPath: '/batch',
       method: 'post',
       payload: {
         requests: requests
@@ -206,7 +207,7 @@ ParseDbInstance_.prototype.saveBatch = function(items, atomic) {
       }
     });
     var response = this.call_({
-      url: 'https://api.parse.com/1/batch',
+      urlPath: '/batch',
       method: 'post',
       payload: {
         requests: requests
@@ -238,13 +239,14 @@ ParseDbInstance_.prototype.saveBatch = function(items, atomic) {
  * @param {Object} args.params The URL parameters to incude (optional).
  * @param {string} args.method The HTTP method to use (optional).
  * @param {Object} args.payload The payload of the request (optional).
- * @param {string} args.url The API URL to make the request to.
+ * @param {string} args.urlPath The API URL to make the request to.
  * @return {Object} The parsed JSON response from the API.
  */
 ParseDbInstance_.prototype.call_ = function(args) {
   args = args || {};
 
-  var url = args.url || 'https://api.parse.com/1/classes/' + this.class_;
+  var urlPath = args.urlPath || 'classes/' + this.class_;
+  var url = this.rootUrl_ + urlPath;
   if (args.id) {
     url += '/' + args.id;
   }

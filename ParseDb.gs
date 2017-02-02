@@ -4,6 +4,10 @@ var _ = Underscore.load();
  * <p>ParseDB is a library for Google Apps Script that has an interface like
  * ScriptDB but stores its data on Parse (https://parse.com/products/core).</p>
  *
+ * <p>Parse shut down on 30 January 2017. This fork of the previous library
+ * includes a root URL parameter to replace the hosted Parse with your own
+ * server.</p>
+ *
  * <p>Parse is a popular 3rd party, cloud-based JSON object store
  * and provides many of the core features of ScriptDB. The library makes it
  * easier to transition your code from using Apps Script's native ScriptDB to
@@ -34,6 +38,7 @@ var _ = Underscore.load();
  *   <code>name.first</code> cannot.</li>
  * </ul>
  *
+ * @param {string} rootUrl The root URL for the parse server.
  * @param {string} applicationId The application ID from the parse.com
  *     dashboard.
  * @param {string} restApiKey The REST API key from the parse.com dashboard.
@@ -43,7 +48,11 @@ var _ = Underscore.load();
  *     <code>ScriptDbIntance</code>
  *     (https://developers.google.com/apps-script/reference/script-db/script-db-instance).
  */
-function getMyDb(applicationId, restApiKey, class) {
+function getMyDb(rootUrl, applicationId, restApiKey, class) {
+  if (!rootUrl) {
+    throw 'Root URL required.';
+  }
+
   if (!applicationId) {
     throw 'Application ID required.';
   }
@@ -53,5 +62,5 @@ function getMyDb(applicationId, restApiKey, class) {
   if (!class) {
     throw 'Class required.';
   }
-  return new ParseDbInstance_(applicationId, restApiKey, class);
+  return new ParseDbInstance_(rootUrl, applicationId, restApiKey, class);
 }
